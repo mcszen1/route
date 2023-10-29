@@ -3,6 +3,8 @@ from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
 import cv2
 import numpy as np
 
+st.set_option('logger.level', 'debug')
+
 class VideoTransformer(VideoTransformerBase):
     def transform(self, frame):
         image = frame.to_ndarray(format="bgr24")
