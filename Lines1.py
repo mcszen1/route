@@ -24,7 +24,7 @@ st.title("Detecção de Linhas em Tempo Real")
 
 # Iniciando o processamento de vídeo
 webrtc_streamer(key="example",
-                video_transformer_factory=VideoTransformer,
+                video_processor_factory=VideoTransformer,
                 media_stream_constraints={
                     "video": {
                         "width": {"ideal": 320},
