@@ -23,4 +23,4 @@ class VideoTransformer(VideoTransformerBase):
 st.title("Detecção de Linhas em Tempo Real")
 
 # Iniciando o processamento de vídeo
-webrtc_streamer(key="example", video_transformer_factory=VideoTransformer)
+webrtc_streamer(key="example")
