@@ -3,6 +3,9 @@ from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
 import cv2
 import numpy as np
 
+RTC_CONFIGURATION = RTCConfiguration(
+    {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
+)
 
 class VideoTransformer(VideoTransformerBase):
     def transform(self, frame):
@@ -24,4 +27,14 @@ class VideoTransformer(VideoTransformerBase):
 st.title("Detecção de Linhas em Tempo Real")
 
 # Iniciando o processamento de vídeo
-webrtc_streamer(key="example")
+webrtc_streamer(key="example",
+                video_transformer_factory=VideoTransformer,
+                rtc_configuration=RTC_CONFIGURATION,
+                media_stream_constraints={
+                    "video": {
+                        "width": {"ideal": 320},
+                        "height": {"ideal": 240},
+                        "frameRate": {"ideal": 15}
+                    }
+                },
+                )
