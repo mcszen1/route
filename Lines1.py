@@ -3,33 +3,28 @@ from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
 import cv2
 import numpy as np
 
-class VideoTransformer(VideoTransformerBase):
-    def transform(self, frame):
-        image = frame.to_ndarray(format="bgr24")
 
-        # Processamento de imagem aqui
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        blur = cv2.GaussianBlur(gray, (5, 5), 0)
-        edges = cv2.Canny(blur, 50, 150)
-        lines = cv2.HoughLinesP(edges, 1, np.pi/180, threshold=50, minLineLength=50, maxLineGap=10)
+def callback(frame):
+    img = frame.to_ndarray(format="bgr24")
 
-        if lines is not None:
-            for line in lines:
-                x1, y1, x2, y2 = line[0]
-                cv2.line(image, (x1, y1), (x2, y2), (0, 255, 0), 3)
+    # Redimensiona a imagem para diminuir a carga de processamento
+    img = cv2.resize(img, (320, 240))
 
-        return image
+    # Aplica o filtro Canny para detecção de bordas
+    edges = cv2.Canny(img, 100, 200)
+    edges_color = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
+
+    return av.VideoFrame.from_ndarray(edges_color, format="bgr24")
 
 st.title("Detecção de Linhas em Tempo Real")
 
 # Iniciando o processamento de vídeo
-webrtc_streamer(key="example",
-                video_processor_factory=VideoTransformer,
+webrtc_streamer(key="example", 
+                video_frame_callback=callback,
                 media_stream_constraints={
                     "video": {
                         "width": {"ideal": 320},
                         "height": {"ideal": 240},
                         "frameRate": {"ideal": 15}
                     }
-                },
-                )
+                })
